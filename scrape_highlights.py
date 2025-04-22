@@ -94,5 +94,6 @@ if __name__ == "__main__":
     matches = get_all_matches()
     
     # Save unencrypted version (optional)
-    with open('highlight.json', 'w', encoding='utf-8') as f:
-        json.dump(encrypt_data(matches), f, indent=4, ensure_ascii=False)
+    encrypted_data = encrypt_data(matches)
+    with open('highlight.json', 'wb') as f:
+        f.write(encrypted_data)
