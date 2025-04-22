@@ -3,9 +3,31 @@ from bs4 import BeautifulSoup
 import json
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
+import base64
+from cryptography.fernet import Fernet
+import os
+import hashlib
 
+# Encryption Configuration
+ENCRYPTION_PASSWORD = "the_reds_show"  # Change this to your secure password
 BASE_URL = "https://tiksports.net"
 HEADERS = {"User-Agent": "Mozilla/5.0"}
+
+# Generate encryption key from password
+def generate_key(password):
+    # Hash the password to get consistent 32-byte key
+    hashed = hashlib.sha256(password.encode()).digest()
+    return base64.urlsafe_b64encode(hashed)
+
+# Initialize encryption
+KEY = generate_key(ENCRYPTION_PASSWORD)
+CIPHER = Fernet(KEY)
+
+def encrypt_data(data):
+    """Encrypt JSON data using Fernet encryption"""
+    json_str = json.dumps(data)
+    encrypted_data = CIPHER.encrypt(json_str.encode())
+    return encrypted_data
 
 def fetch_page(url):
     try:
@@ -27,7 +49,8 @@ def extract_highlights(match_url):
             if 'Highlight' in btn.text:
                 highlights.append({
                     'name': btn.text.strip(),
-                    'url': btn.get('data-link', '').strip()
+                    'url': btn.get('data-link', '').strip(),
+                    'is_live': btn.get('data-link-live', 'false') == 'true'
                 })
     return highlights
 
@@ -67,7 +90,9 @@ def get_all_matches():
         return []
 
 if __name__ == "__main__":
+    # Get matches data
     matches = get_all_matches()
+    
+    # Save unencrypted version (optional)
     with open('highlight.json', 'w', encoding='utf-8') as f:
-        json.dump(matches, f, indent=4, ensure_ascii=False)
-    print("Data saved to highlight.json")
+        json.dump(encrypt_data(output), f, indent=4, ensure_ascii=False)
