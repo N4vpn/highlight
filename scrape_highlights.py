@@ -27,8 +27,7 @@ def extract_highlights(match_url):
             if 'Highlight' in btn.text:
                 highlights.append({
                     'name': btn.text.strip(),
-                    'url': btn.get('data-link', '').strip(),
-                    'is_live': btn.get('data-link-live') == 'true'
+                    'url': btn.get('data-link', '').strip()
                 })
     return highlights
 
