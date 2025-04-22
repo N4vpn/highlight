@@ -95,4 +95,4 @@ if __name__ == "__main__":
     
     # Save unencrypted version (optional)
     with open('highlight.json', 'w', encoding='utf-8') as f:
-        json.dump(encrypt_data(output), f, indent=4, ensure_ascii=False)
+        json.dump(encrypt_data(matches), f, indent=4, ensure_ascii=False)
