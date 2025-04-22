@@ -69,10 +69,6 @@ def get_all_matches():
 
 if __name__ == "__main__":
     matches = get_all_matches()
-    output = {
-        "last_updated": datetime.utcnow().isoformat() + "Z",
-        "matches": matches
-    }
     with open('highlight.json', 'w', encoding='utf-8') as f:
-        json.dump(output, f, indent=4, ensure_ascii=False)
+        json.dump(matches, f, indent=4, ensure_ascii=False)
     print("Data saved to highlight.json")
