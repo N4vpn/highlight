@@ -96,4 +96,4 @@ if __name__ == "__main__":
     # Save unencrypted version (optional)
     encrypted_data = encrypt_data(matches)
     with open('highlight.json', 'wb') as f:
-        f.write(encrypted_data)
+        f.write(matches)
