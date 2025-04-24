@@ -27,7 +27,7 @@ jobs:
 
       - name: Push highlight.json to another repo
         run: |
-          git clone https://x-access-token:${{ secrets.TARGET_REPO_TOKEN }}@github.com/Minkhantk269/highlight.git
+          git clone https://x-access-token:${{ secrets.TOKEN }}@github.com/Minkhantk269/highlight.git
           cp highlight.json highlight/
           cd highlight
           git config user.name "GitHub Actions"
