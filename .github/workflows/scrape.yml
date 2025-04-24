@@ -1,15 +1,15 @@
-name: Auto Scrape Highlights
+name: Auto Scrape Highlights & Replay
 
 on:
   schedule:
-    - cron: '0 * * * *'  # Runs at the start of every hour
-  workflow_dispatch:      # Allows manual runs
+    - cron: '0 * * * *'
+  workflow_dispatch:
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Critical: Grants push permission
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -22,18 +22,19 @@ jobs:
       - name: Install dependencies
         run: pip install requests beautifulsoup4 cryptography
 
-      - name: Run scraper
+      - name: Run highlight scraper
         run: python scrape_highlights.py
 
-      - name: Push highlight.json to another repo
+      - name: Run replay scraper
+        run: python replay.py
+
+      - name: Push both highlight.json and replay.json
         run: |
-          git clone https://x-access-token:${{ secrets.TOKEN }}@github.com/Minkhantk269/highlight.git
-          cp highlight.json highlight/
+          git clone https://x-access-token:${{ secrets.TARGET_REPO_TOKEN }}@github.com/Minkhantk269/highlight.git
+          cp highlight.json replay.json highlight/
           cd highlight
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git add highlight.json
-          git commit -m "Auto update from scraper [skip ci]" || echo "No changes"
+          git add highlight.json replay.json
+          git commit -m "Auto update highlight & replay from scraper [skip ci]" || echo "No changes"
           git push
-
-
