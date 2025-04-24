@@ -25,14 +25,15 @@ jobs:
       - name: Run scraper
         run: python scrape_highlights.py
 
-      - name: Push highlight.json to external repo
+      - name: Push highlight.json to another repo
         run: |
           git clone https://x-access-token:${{ secrets.TARGET_REPO_TOKEN }}@github.com/Minkhantk269/highlight.git
-          cp highlight.json target-repo/
-          cd target-repo
+          cp highlight.json highlight/
+          cd highlight
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           git add highlight.json
-          git commit -m "Auto-update highlight.json from scraper [skip ci]" || echo "No changes to commit"
+          git commit -m "Auto update from scraper [skip ci]" || echo "No changes"
           git push
+
 
