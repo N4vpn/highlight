@@ -50,7 +50,7 @@ def extract_highlights(match_url):
                 highlights.append({
                     'name': btn.text.strip(),
                     'url': btn.get('data-link', '').strip(),
-                    'is_live': btn.get('data-link-live', 'false') == 'true'
+                    
                 })
     return highlights
 
@@ -79,8 +79,8 @@ def get_all_matches():
                 match_url_tag = row.find('a', class_='right-row')
                 if match_url_tag:
                     match_url = BASE_URL + match_url_tag['href']
-                    match_data['match_url'] = match_url
-                    match_data['highlights'] = extract_highlights(match_url)
+                    
+                    match_data['video_link'] = extract_highlights(match_url)
                 matches.append(match_data)
             except Exception as e:
                 print(f"Skipping a match due to error: {e}")
