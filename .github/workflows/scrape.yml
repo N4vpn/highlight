@@ -26,7 +26,7 @@ jobs:
         run: python scrape_highlights.py
 
       - name: Run replay scraper
-        run: python replay.py
+        run: python scrape_replays.py
 
       - name: Push both highlight.json and replay.json
         run: |
