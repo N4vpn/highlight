@@ -95,7 +95,7 @@ if __name__ == "__main__":
     
     # Save unencrypted version (optional)
     encrypted_data = encrypt_data(matches)
-    with open('replays.json', 'w', encoding='utf-8') as f:
+    with open('replay.json', 'w', encoding='utf-8') as f:
         json.dump(matches, f, indent=4, ensure_ascii=False)
-    #with open('replays.json', 'wb') as f:
+    #with open('replay.json', 'wb') as f:
         #f.write(encrypted_data)
