@@ -25,3 +25,14 @@ jobs:
 
       - name: Run scraper
         run: python scrape.py
+
+      - name: Setup SSH for DigitalOcean Server
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DO_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.DO_SERVER_IP }} >> ~/.ssh/known_hosts
+
+      - name: Upload highlight.json and replay.json to DigitalOcean Laravel storage folder
+        run: |
+          scp scrape.json ${{ secrets.DO_SERVER_USER }}@${{ secrets.DO_SERVER_IP }}:/var/www/football_live/storage/app/data/
