@@ -2,7 +2,7 @@ name: Scrape Every Minute
 
 on:
   schedule:
-    - cron: '*/1 * * * *'  # Run every 1 minute (UTC)
+    - cron: '* * * * *'  # Run every 1 minute (UTC)
   workflow_dispatch:
 
 jobs:
