@@ -7,6 +7,7 @@ import base64
 from cryptography.fernet import Fernet
 import os
 import hashlib
+from urllib.parse import urlparse, urlunparse, parse_qs
 
 # Encryption Configuration
 ENCRYPTION_PASSWORD = "the_reds_show"  # Change this to your secure password
@@ -50,9 +51,16 @@ def extract_highlights(match_url):
                 highlights.append({
                     'name': btn.text.strip(),
                     'url': btn.get('data-link', '').strip(),
-                    
                 })
     return highlights
+
+def clean_logo_url(logo_url):
+    """Remove query parameters from the logo URL."""
+    if logo_url:
+        parsed_url = urlparse(logo_url)
+        parsed_url = parsed_url._replace(query='')  # Remove the query part
+        return urlunparse(parsed_url)  # Return the cleaned URL
+    return logo_url
 
 def get_all_matches():
     try:
@@ -67,19 +75,18 @@ def get_all_matches():
                     "league": row.find('a', class_='league-name').get('alt', 'N/A'),
                     "home_team": {
                         "name": row.find('div', class_='first-club').find('div', class_='club-name').text.strip(),
-                        "logo": row.find('div', class_='first-club').find('img')['src'] if row.find('div', class_='first-club').find('img') else None,
+                        "logo": clean_logo_url(row.find('div', class_='first-club').find('img')['src']) if row.find('div', class_='first-club').find('img') else None,
                         "score": row.find('div', class_='first-club').find('span', class_='b-text-dark').text.strip() if row.find('div', class_='first-club').find('span', class_='b-text-dark') else None
                     },
                     "away_team": {
                         "name": row.find('div', class_='last-club').find('div', class_='club-name').text.strip(),
-                        "logo": row.find('div', class_='last-club').find('img')['src'] if row.find('div', class_='last-club').find('img') else None,
+                        "logo": clean_logo_url(row.find('div', class_='last-club').find('img')['src']) if row.find('div', class_='last-club').find('img') else None,
                         "score": row.find('div', class_='last-club').find('span', class_='b-text-dark').text.strip() if row.find('div', class_='last-club').find('span', class_='b-text-dark') else None
                     }
                 }
                 match_url_tag = row.find('a', class_='right-row')
                 if match_url_tag:
                     match_url = BASE_URL + match_url_tag['href']
-                    
                     match_data['video_link'] = extract_highlights(match_url)
                 matches.append(match_data)
             except Exception as e:
@@ -97,5 +104,5 @@ if __name__ == "__main__":
     encrypted_data = encrypt_data(matches)
     with open('replay.json', 'w', encoding='utf-8') as f:
         json.dump(matches, f, indent=4, ensure_ascii=False)
-    #with open('replay.json', 'wb') as f:
-        #f.write(encrypted_data)
+    # with open('highlight.json', 'wb') as f:
+    #     f.write(encrypted_data)
