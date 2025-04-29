@@ -457,8 +457,7 @@ if __name__ == '__main__':
                 if tag_value == home_name or tag_value == away_name:
                     if new_video_links not in match['video_links']:
                         match['video_links'].insert(0, new_video_links)
-
-        # Save the updated matches back to the JSON file
+                        
         storage_path = os.path.join(os.path.dirname(__file__), '..', '..', 'storage', 'app', 'data', 'scrape.json')
-        with open(storage_path, 'w') as json_file:
+        with open('scrape.json', 'w') as json_file:
             json.dump(matches, json_file, indent=4)
