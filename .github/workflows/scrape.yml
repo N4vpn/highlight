@@ -28,7 +28,7 @@ jobs:
       - name: Run replay scraper
         run: python scrape_replays.py
 
-      - name: Push both highlight.json and replay.json
+      - name: Push both highlight.json and replay.json to GitHub
         run: |
           git clone https://x-access-token:${{ secrets.TOKEN }}@github.com/Minkhantk269/highlight.git
           cp highlight.json replay.json highlight/
@@ -38,3 +38,14 @@ jobs:
           git add highlight.json replay.json
           git commit -m "Auto update highlight & replay from scraper [skip ci]" || echo "No changes"
           git push
+
+      - name: Setup SSH for DigitalOcean Server
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DO_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.DO_SERVER_IP }} >> ~/.ssh/known_hosts
+
+      - name: Upload highlight.json and replay.json to DigitalOcean Laravel storage folder
+        run: |
+          scp highlight.json replay.json ${{ secrets.DO_SERVER_USER }}@${{ secrets.DO_SERVER_IP }}:/var/www/football_live/storage/app/data/
