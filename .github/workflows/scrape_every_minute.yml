@@ -24,4 +24,4 @@ jobs:
           pip install requests beautifulsoup4 googletrans==4.0.0-rc1 pytz
 
       - name: Run scraper
-        run: python path/to/scrape.py
+        run: python scrape.py
