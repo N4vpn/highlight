@@ -1,0 +1,29 @@
+name: Scrape Every Minute
+
+on:
+  schedule:
+    - cron: '* * * * *'  # Every 1 minute
+  workflow_dispatch:       # Optional: Manual run from GitHub UI
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4
+
+      - name: Run fast scrape script
+        run: python scrape_fast.py  # အသစ်ရေးထားတဲ့ script
+
+      - name: Upload to Laravel server (optional)
+        run: |
+          scp -i ~/.ssh/id_rsa output.json root@104.248.153.179:/var/www/football_live/storage/app/public/
